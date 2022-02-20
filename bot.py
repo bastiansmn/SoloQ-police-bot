@@ -6,9 +6,17 @@ import pandas as pd
 import csv
 import time
 import sys
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+if len(sys.argv) == 1:  
+    print("ERROR: Use python bot.py [day/week/two]")
+    exit(1)
 
 #VARIABLES
-api_key = 'INSERT API KEY HERE' # here please put in-between the quotes your Riot API Developer Key
+api_key = os.environ.get("RIOT_API_KEY") # here please put in-between the quotes your Riot API Developer Key
 watcher = LolWatcher(api_key)
 my_region = 'euw1'
 region = 'europe'
@@ -16,19 +24,17 @@ current_time = int(time.time())
 last = (current_time - 86400)
 week = (current_time - 604800)
 two = (current_time - 172800)
-print(current_time)
-print(last)
 
 #PUUIDS ----------------------------------
-top_id = 'fQwRacUndeCleiOeQi4qm4WTFuoqSZg7SXnQWeAepWZPZ6teQ7Aytl5wAoAG3ltsM_ZcNT904BbIUg' # here write the puuid of your toplaner
-jgl_id = 'Kae9k0d4l2o6sKblB36Pm-IuPjgDNFLu2Vz0ODNcOG2PaNVXRWL27j82I7-UKGCwDgifz82RrT6zQA' # here write the puuid of your jungler
-mid_id = '4B_9lFf5JU4onY__sQyZY6RVVNrXnsCsX6vqYgjWKjlFqnGj4Vb0gxCa0mUMWU8uK_6NM-IeqaB_ag' # here write the puuid of your midlaner
-adc_id = 'eCze5I2zMSyG4x84qyVrlbJjQOdyr6cn6IPah6AOjpZA7x6LBm4EtdMUJzjR8EAZBazCsGqSy7-oTw' # here write the puuid of your ad carry
-sup_id = 'IQYpa2gn6ocPcdte-LHXNk8VTVSrcFY6EzfJqux4Nw33wonDXugp6bChZm3bY5-hC2d-2g_17HfMGg' # here write the puuid of your support
+top_id = 'pA33BhYM61j6yYB7Z8JyhxJv1aM9XNzoiidXXBb4WAWMKE1cDxQhtc5TlQt8kIjolK0YaloODGZ4nw' # NVS Luiku - Toplaner 
+jgl_id = '7ENqpmPU109gcSpkVhP-SoqyPcBEEXNIPvIBjTMufQfOBx-xDOiqM3C83cE7-SPLJwjXv-RenD9npA' # NVS BeIit - Jungler
+mid_id = 'acPmJnjJf4ew744Cg4J036GK0S4boT4IpkIfKStVEPDVpKTPtKH1A9RWpHwr-3jSUeFPtMSyZXXqaA' # NVS Einard - Midlaner
+adc_id = 'cm0lXqJNe_h_zqrH38Q8FhxRYy6PAxpLBwjbj7eu44jhs9I_JwLQQZe52fu2nY7ubcBRhb8ygo7Gdw' # NVS Anyone - ADCarry
+sup_id = 'HPcKwjnZVEkGKpvlCVFpSTTC2b4z54kajBao5ifBgXWitWiz25BLBEGzsBkwsdAT6toZ38JOjzXMMg' # NVS uden
 oplon = [top_id, jgl_id, mid_id, adc_id, sup_id]
 
 #CALCULS ----------------------------------
-player_name = ['Toplaner', 'Jungler', 'Midlaner', 'ADCarry', 'Support']
+player_name = ['NVS Luiku', 'NVS BeIit', 'NVS Einard', 'NVS Anyone', 'NVS uden']
 game_nbrs = []
 
 # DAY COMMAND ----------------------------------
@@ -62,11 +68,19 @@ game_nbrs.append(len(midmh))
 game_nbrs.append(len(adcmh))
 game_nbrs.append(len(supmh))
 
+def get_string_of_period(string):
+    if string == "day":
+        return "24 dernières heures"
+    if string == "week":
+        return "7 derniers jours"
+    if string == "two":
+        return "2 derniers jours"
+
 df = pd.DataFrame(
     {'Player': player_name,
-    'phrase': "has played",
+    'phrase': "a joué **",
     'Games': game_nbrs,
-    'last': "games of soloQ in the last 24 hours.",
+    'last': f"** games de soloQ pendant les dernières {get_string_of_period(sys.argv[1])}",
 })
 
 print(df)
@@ -84,10 +98,10 @@ async def on_ready():
 
 @bot.command()
 async def soloQ(ctx):
-    await ctx.send("https://tenor.com/view/cops-police-sirens-catching-crminals-what-you-gonna-do-gif-22472645")
     for i in range(5):
         df1 = df.loc[[i]]
         await ctx.send(df1.to_string(header=False, index=False))
         i = i + 1
 
-bot.run("INSERT DISCORD BOT TOKEN HERE") # here paste in-between double quotes your discord bot token
+
+bot.run(os.environ.get("BOT_TOKEN"))
