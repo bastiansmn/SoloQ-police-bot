@@ -25,41 +25,46 @@ last = (current_time - 86400)
 week = (current_time - 604800)
 two = (current_time - 172800)
 
+player_name = ['NVS Luiku', 'NVS BeIit', 'NVS Einard', 'NVS Anyone', 'NVS uden']
+
 #PUUIDS ----------------------------------
-top_id = 'pA33BhYM61j6yYB7Z8JyhxJv1aM9XNzoiidXXBb4WAWMKE1cDxQhtc5TlQt8kIjolK0YaloODGZ4nw' # NVS Luiku - Toplaner 
-jgl_id = '7ENqpmPU109gcSpkVhP-SoqyPcBEEXNIPvIBjTMufQfOBx-xDOiqM3C83cE7-SPLJwjXv-RenD9npA' # NVS BeIit - Jungler
-mid_id = 'acPmJnjJf4ew744Cg4J036GK0S4boT4IpkIfKStVEPDVpKTPtKH1A9RWpHwr-3jSUeFPtMSyZXXqaA' # NVS Einard - Midlaner
-adc_id = 'cm0lXqJNe_h_zqrH38Q8FhxRYy6PAxpLBwjbj7eu44jhs9I_JwLQQZe52fu2nY7ubcBRhb8ygo7Gdw' # NVS Anyone - ADCarry
-sup_id = 'HPcKwjnZVEkGKpvlCVFpSTTC2b4z54kajBao5ifBgXWitWiz25BLBEGzsBkwsdAT6toZ38JOjzXMMg' # NVS uden
-oplon = [top_id, jgl_id, mid_id, adc_id, sup_id]
+def sync_puuid():
+    top_id = watcher.summoner.by_name(my_region, player_name[0])["puuid"]
+    jgl_id = watcher.summoner.by_name(my_region, player_name[1])["puuid"]
+    mid_id = watcher.summoner.by_name(my_region, player_name[2])["puuid"]
+    adc_id = watcher.summoner.by_name(my_region, player_name[3])["puuid"]
+    sup_id = watcher.summoner.by_name(my_region, player_name[4])["puuid"]
+    return [top_id, jgl_id, mid_id, adc_id, sup_id]
+
+oplon = sync_puuid()
+
 
 #CALCULS ----------------------------------
-player_name = ['NVS Luiku', 'NVS BeIit', 'NVS Einard', 'NVS Anyone', 'NVS uden']
 game_nbrs = []
 
 # DAY COMMAND ----------------------------------
 if sys.argv[1] == "day":
-    topmh = list(watcher.match.matchlist_by_puuid(region, top_id, type="ranked", start_time=last, end_time=current_time, count=100))
-    jglmh = list(watcher.match.matchlist_by_puuid(region, jgl_id, type="ranked", start_time=last, end_time=current_time, count=100))
-    midmh = list(watcher.match.matchlist_by_puuid(region, mid_id, type="ranked", start_time=last, end_time=current_time, count=100))
-    adcmh = list(watcher.match.matchlist_by_puuid(region, adc_id, type="ranked", start_time=last, end_time=current_time, count=100))
-    supmh = list(watcher.match.matchlist_by_puuid(region, sup_id, type="ranked", start_time=last, end_time=current_time, count=100))
+    topmh = list(watcher.match.matchlist_by_puuid(region, oplon[0], type="ranked", start_time=last, end_time=current_time, count=100))
+    jglmh = list(watcher.match.matchlist_by_puuid(region, oplon[1], type="ranked", start_time=last, end_time=current_time, count=100))
+    midmh = list(watcher.match.matchlist_by_puuid(region, oplon[2], type="ranked", start_time=last, end_time=current_time, count=100))
+    adcmh = list(watcher.match.matchlist_by_puuid(region, oplon[3], type="ranked", start_time=last, end_time=current_time, count=100))
+    supmh = list(watcher.match.matchlist_by_puuid(region, oplon[4], type="ranked", start_time=last, end_time=current_time, count=100))
 
 # WEEK COMMAND ----------------------------------
 if sys.argv[1] == "week":
-    topmh = list(watcher.match.matchlist_by_puuid(region, top_id, type="ranked", start_time=week, end_time=current_time, count=100))
-    jglmh = list(watcher.match.matchlist_by_puuid(region, jgl_id, type="ranked", start_time=week, end_time=current_time, count=100))
-    midmh = list(watcher.match.matchlist_by_puuid(region, mid_id, type="ranked", start_time=week, end_time=current_time, count=100))
-    adcmh = list(watcher.match.matchlist_by_puuid(region, adc_id, type="ranked", start_time=week, end_time=current_time, count=100))
-    supmh = list(watcher.match.matchlist_by_puuid(region, sup_id, type="ranked", start_time=week, end_time=current_time, count=100))
+    topmh = list(watcher.match.matchlist_by_puuid(region, oplon[0], type="ranked", start_time=week, end_time=current_time, count=100))
+    jglmh = list(watcher.match.matchlist_by_puuid(region, oplon[1], type="ranked", start_time=week, end_time=current_time, count=100))
+    midmh = list(watcher.match.malist_by_puuid(region, oplon[2], type="ranked", start_time=week, end_time=current_time, count=100))
+    adcmh = list(watcher.match.matchlist_by_puuid(region, oplon[3], type="ranked", start_time=week, end_time=current_time, count=100))
+    supmh = list(watcher.match.matchlist_by_puuid(region, oplon[4], type="ranked", start_time=week, end_time=current_time, count=100))
 
 #LAST TWO DAYS COMMAND ----------------------------------
 if sys.argv[1] == "two":
-    topmh = list(watcher.match.matchlist_by_puuid(region, top_id, type="ranked", start_time=two, end_time=current_time, count=100))
-    jglmh = list(watcher.match.matchlist_by_puuid(region, jgl_id, type="ranked", start_time=two, end_time=current_time, count=100))
-    midmh = list(watcher.match.matchlist_by_puuid(region, mid_id, type="ranked", start_time=two, end_time=current_time, count=100))
-    adcmh = list(watcher.match.matchlist_by_puuid(region, adc_id, type="ranked", start_time=two, end_time=current_time, count=100))
-    supmh = list(watcher.match.matchlist_by_puuid(region, sup_id, type="ranked", start_time=two, end_time=current_time, count=100))
+    topmh = list(watcher.match.matchlist_by_puuid(region, oplon[0], type="ranked", start_time=two, end_time=current_time, count=100))
+    jglmh = list(watcher.match.matchlist_by_puuid(region, oplon[1], type="ranked", start_time=two, end_time=current_time, count=100))
+    midmh = list(watcher.match.matchlist_by_puuid(region, oplon[2], type="ranked", start_time=two, end_time=current_time, count=100))
+    adcmh = list(watcher.match.matchlist_by_puuid(region, oplon[3], type="ranked", start_time=two, end_time=current_time, count=100))
+    supmh = list(watcher.match.matchlist_by_puuid(region, oplon[4], type="ranked", start_time=two, end_time=current_time, count=100))
 
 # API DATAFRAME CREATION ----------------------------------
 game_nbrs.append(len(topmh))
@@ -98,6 +103,7 @@ async def on_ready():
 
 @bot.command()
 async def soloQ(ctx):
+    oplon = sync_puuid()
     for i in range(5):
         df1 = df.loc[[i]]
         await ctx.send(df1.to_string(header=False, index=False))
